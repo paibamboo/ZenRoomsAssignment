@@ -1,0 +1,614 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="icon"
+        type="image/png"
+        href="favicon.ico">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Zen Rooms</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, 'DejaVu Sans', 'Liberation Sans', Freesans, sans-serif;
+            font-weight: lighter;
+            color: #4a4a4a;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #063e84;
+            font-size: 16px;
+        }
+
+        .weekend {
+            background-color: #e48282;
+            color: #fff;
+        }
+
+        .border-btm {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .container {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            overflow: auto;
+            padding: 10px 0 10px 0;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                width: 90%;
+            }
+        }
+
+        .left {
+            width: 15%;
+            float: left;
+            border-right: 1px solid #ccc;
+        }
+
+        .right {
+            width: 85%;
+            float: right;
+        }
+
+        .row {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .two-rows {
+            height: 80px;
+            line-height: 80px;
+        }
+
+        .col-full {
+            text-align: center;
+        }
+
+        .col-part {
+            width: 70px;
+            float: left;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .arrow {
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        .arrow-right {
+            border-left: 7px solid #063E84;
+        }
+
+        .arrow-left {
+            border-right: 7px solid #063E84;
+        }
+
+        #month-nav-right {
+            top: 12px;
+            right: 30%;
+        }
+
+        @media (min-width: 768px) {
+            #month-nav-right {
+                right: 35%;
+            }
+        }
+
+        #month-nav-left {
+            top: 12px;
+            left: 30%;
+        }
+
+        @media (min-width: 768px) {
+            #month-nav-left {
+                left: 35%;
+            }
+        }
+
+        .date-nav-left-container {
+            float: left;
+            height: 40px;
+            width: 13px;
+            background-color: #a02d2d;
+            position: relative;
+            cursor: pointer;
+            border-right: 1px solid #ffa4a4;
+            border-left: 1px solid #cc9999;
+            -moz-border-radius: 4px 2px 2px 4px;
+            -webkit-border-radius: 4px 2px 2px 4px;
+            border-radius: 4px 2px 2px 4px;
+        }
+
+        #all-dates {
+            width: 1330px;
+            -moz-transition: margin-left 0.2s;
+            -o-transition: margin-left 0.2s;
+            -webkit-transition: margin-left 0.2s;
+            transition: margin-left 0.2s;
+        }
+
+        #all-dates-container {
+            overflow: hidden;
+            margin-left: 13px;
+            margin-right: 13px;
+        }
+
+        .date-nav-right-container {
+            float: right;
+            height: 40px;
+            width: 13px;
+            background-color: #a02d2d;
+            position: relative;
+            cursor: pointer;
+            border-left: 1px solid #ffa4a4;
+            border-right: 1px solid #cc9999;
+            -moz-border-radius: 2px 4px 4px 2px;
+            -webkit-border-radius: 2px 4px 4px 2px;
+            border-radius: 2px 4px 4px 2px;
+        }
+
+        #date-nav-left {
+            border-right: 6px solid white;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            top: 13px;
+            left: 2px;
+        }
+
+        #date-nav-right {
+            border-left: 6px solid white;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            top: 13px;
+            left: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="two-rows border-btm">
+                <div class="col-full highlight">Room / Price</div>
+            </div>
+            <div class="row">
+                <div class="col-full highlight">Double</div>
+            </div>
+            <div class="row">
+                <div class="col-full" style="font-size: 14px;">Rooms Available</div>
+            </div>
+            <div class="row">
+                <div class="col-full" style="font-size: 14px;">Price</div>
+            </div>
+            <div class="row">
+                <div class="col-full highlight">Single</div>
+            </div>
+            <div class="row">
+                <div class="col-full" style="font-size: 14px;">Rooms Available</div>
+            </div>
+            <div class="row">
+                <div class="col-full" style="font-size: 14px;">Price</div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="row border-btm">
+                <div class="col-full highlight" style="position: relative;">
+                    <span class="arrow arrow-left" id="month-nav-left"></span>
+                    May 2016
+                    <span class="arrow arrow-right" id="month-nav-right"></span>
+                </div>
+            </div>
+            <div class="date-nav-left-container">
+                <span class="arrow arrow-left" id="date-nav-left"></span>
+            </div>
+
+            <div class="date-nav-right-container">
+                <span class="arrow arrow-right" id="date-nav-right"></span>
+            </div>
+
+            <div id="all-dates-container">
+                <div id="all-dates" style="margin-left: 0px;">
+                    <div class="row border-btm">
+                        <div class="col-part weekend">
+                            Sun 1
+                        </div>
+                        <div class="col-part">
+                            Mon 2
+                        </div>
+                        <div class="col-part">
+                            Tue 3
+                        </div>
+                        <div class="col-part">
+                            Wed 4
+                        </div>
+                        <div class="col-part">
+                            Thu 5
+                        </div>
+                        <div class="col-part">
+                            Fri 6
+                        </div>
+                        <div class="col-part weekend">
+                            Sat 7
+                        </div>
+                        <div class="col-part weekend">
+                            Sun 8
+                        </div>
+                        <div class="col-part">
+                            Mon 9
+                        </div>
+                        <div class="col-part">
+                            Tue 10
+                        </div>
+                        <div class="col-part">
+                            Wed 11
+                        </div>
+                        <div class="col-part">
+                            Thu 12
+                        </div>
+                        <div class="col-part">
+                            Fri 13
+                        </div>
+                        <div class="col-part weekend">
+                            Sat 14
+                        </div>
+                        <div class="col-part weekend">
+                            Sun 15
+                        </div>
+                        <div class="col-part">
+                            Mon 16
+                        </div>
+                        <div class="col-part">
+                            Tue 17
+                        </div>
+                        <div class="col-part">
+                            Wed 18
+                        </div>
+                        <div class="col-part">
+                            Thu 19
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                        <div class="col-part">
+                            100
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                        <div class="col-part">
+                            5
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                        <div class="col-part">
+                            20
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+
+        window.onload = function () {
+            var curDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
+            var isTerminal = false;
+            function navLeft() {
+                var overflowPanel = document.getElementById('all-dates');
+                var style = overflowPanel.style || window.getComputedStyle(overflowPanel);
+                var marginLeft = parseInt(style.marginLeft);
+                var columnWidthAndMargin = 140;
+
+                // when the sliding of the div is almost finished (the last sliding), the last sliding needs to move to an exact edge of div.
+                if (marginLeft < 0 && marginLeft >= -columnWidthAndMargin) {
+                    overflowPanel.style.marginLeft = '0px';
+                }
+                    // in normal case, the sliding moves the div by 'columnWidthAndMargin' px.
+                else if (marginLeft < -columnWidthAndMargin) {
+                    var result = marginLeft + columnWidthAndMargin;
+                    overflowPanel.style.marginLeft = result + 'px';
+                }
+                    // when the div is at its edge, but a user still navigates left, the sliding will move the div to the right and then the left(same position)
+                    // to show that the user has reached the edge of the div
+                else if (marginLeft == 0) {
+                    overflowPanel.style.marginLeft = (marginLeft + 30) + 'px';
+                    setTimeout(function () { overflowPanel.style.marginLeft = marginLeft + 'px' }, 150);
+                }
+                isTerminal = false;
+            }
+
+            function navRight() {
+                var overflowPanel = document.getElementById('all-dates');
+                var style = overflowPanel.style || window.getComputedStyle(overflowPanel);
+                var marginLeft = parseInt(style.marginLeft);
+                var entireWidth = overflowPanel.offsetWidth;
+                var containerWidth = document.getElementById('all-dates-container').offsetWidth;
+                var columnWidthAndMargin = 140;
+                var numberOfItems = 4;
+
+                // when the sliding of the div is almost finished (the last sliding), the last sliding needs to move to an exact edge of div.
+                if (Math.abs(marginLeft) >= (entireWidth - (containerWidth + columnWidthAndMargin))
+                        && Math.abs(marginLeft) < (entireWidth - containerWidth)
+                        && (entireWidth - (containerWidth + columnWidthAndMargin)) >= 0) {
+                    overflowPanel.style.marginLeft = (containerWidth - entireWidth) + 'px';
+                    isTerminal = true;
+                }
+                    // in normal case, the sliding moves the div by 'columnWidthAndMargin' px.
+                else if (Math.abs(marginLeft) < (entireWidth - (containerWidth + columnWidthAndMargin))) {
+                    var result = marginLeft - columnWidthAndMargin;
+                    overflowPanel.style.marginLeft = result + 'px';
+                    isTerminal = false;
+                }
+                    // when the div is at its edge, but a user still navigates right, the sliding will move the div to the right and then the left(same position)
+                    // to show that the user has reached the edge of the div
+                else if (marginLeft == containerWidth - entireWidth) {
+                    overflowPanel.style.marginLeft = (marginLeft - 30) + 'px';
+                    setTimeout(function () { overflowPanel.style.marginLeft = marginLeft + 'px' }, 150);
+                    isTerminal = true;
+                }
+            }
+
+            window.addEventListener('resize', function () {
+                var newDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
+                if (newDatesContainerWidth > curDatesContainerWidth && isTerminal) {
+                    var curMarginLeft = parseInt(document.getElementById('all-dates').style.marginLeft);
+                    var newMarginLeft = curMarginLeft + (newDatesContainerWidth - curDatesContainerWidth);
+                    if (newMarginLeft > 0) newMarginLeft = 0;
+                    document.getElementById('all-dates').style.marginLeft = newMarginLeft + 'px';
+                }
+                curDatesContainerWidth = newDatesContainerWidth;
+            });
+
+            document.getElementsByClassName('date-nav-left-container')[0].addEventListener('click', navLeft);
+            document.getElementsByClassName('date-nav-right-container')[0].addEventListener('click', navRight);
+        }
+    </script>
+</body>
+</html>

@@ -16,8 +16,10 @@ var calendar = function () {
         return '<div class="col-part' + ((date.getDay() === 0 || date.getDay() === 6) ? ' weekend' : '') + '">' + getDayOfWeek(date.getDay()).substring(0, 3) + ' ' + date.getDate() + '</div>';
     }
 
-    function drawPriceOrAvailCol(val) {
-        return '<div class="col-part">' + val + '</div>';
+    function drawPriceOrAvailCol(date, roomType, label, val) {
+        return '<div class="col-part" style="position:relative;">' + '<span class="open-update-popup clickable" data-date="' + date.getDate() +
+            '" data-month="' + (date.getMonth() + 1) + '" data-year="' + date.getFullYear() +
+            '" data-room-type="' + roomType + '" data-label="' + label + '" data-val="' + val + '">' + val + '</span></div>';
     }
 
     var drawCal = function (month, year) {
@@ -38,11 +40,11 @@ var calendar = function () {
             for (var j = 0; j < data[i].Rooms.length; j++) {
                 var room = data[i].Rooms[j];
                 if (room.Type === 'Double') {
-                    doubleAvailRow += drawPriceOrAvailCol(room.Avail);
-                    doublePriceRow += drawPriceOrAvailCol(room.Price);
+                    doubleAvailRow += drawPriceOrAvailCol(dates[i], room.Type, 'Avail', room.Avail);
+                    doublePriceRow += drawPriceOrAvailCol(dates[i], room.Type, 'Price', room.Price);
                 } else if (room.Type === 'Single') {
-                    singleAvailRow += drawPriceOrAvailCol(room.Avail);
-                    singlePriceRow += drawPriceOrAvailCol(room.Price);
+                    singleAvailRow += drawPriceOrAvailCol(dates[i], room.Type, 'Avail', room.Avail);
+                    singlePriceRow += drawPriceOrAvailCol(dates[i], room.Type, 'Price', room.Price);
                 }
             }
 

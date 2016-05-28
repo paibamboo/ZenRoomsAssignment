@@ -9,6 +9,10 @@
         return xhr;
     }
 
+    var updateRoomData = function (date, month, year, roomType, label, value) {
+
+    }();
+
     var getRoomsData = function (month, year) {
         var xhr = createXHR();
         xhr.onreadystatechange = function () {
@@ -46,6 +50,7 @@
     };
 
     return {
-        getRoomsData: getRoomsData
+        getRoomsData: getRoomsData,
+        updateRoomData: updateRoomData
     };
 }();

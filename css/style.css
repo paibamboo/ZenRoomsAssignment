@@ -12,6 +12,10 @@ body {
     color: #4a4a4a;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .highlight {
     font-weight: bold;
     color: #063e84;
@@ -49,7 +53,7 @@ body {
 }
 
 @media (min-width: 992px) {
-    .left{
+    .left {
         width: 15%;
     }
 }
@@ -77,6 +81,10 @@ body {
     float: left;
     text-align: center;
     font-size: 14px;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 
 .arrow {
@@ -85,7 +93,6 @@ body {
     border-top: 7px solid transparent;
     border-bottom: 7px solid transparent;
     position: absolute;
-    cursor: pointer;
 }
 
 .arrow-right {
@@ -136,7 +143,6 @@ body {
     width: 13px;
     background-color: #a02d2d;
     position: relative;
-    cursor: pointer;
     border-right: 1px solid #ffa4a4;
     border-left: 1px solid #cc9999;
     -moz-border-radius: 4px 2px 2px 4px;
@@ -163,7 +169,6 @@ body {
     width: 13px;
     background-color: #a02d2d;
     position: relative;
-    cursor: pointer;
     border-left: 1px solid #ffa4a4;
     border-right: 1px solid #cc9999;
     -moz-border-radius: 2px 4px 4px 2px;
@@ -186,3 +191,52 @@ body {
     top: 13px;
     left: 3px;
 }
+
+.update-popup-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.update-popup {
+    background-color: #fff;
+    width: 192px;
+    padding: 5px;
+    border: 1px solid #B1B1B1;
+    -moz-box-shadow: 0 1px 1px #ccc;
+    -webkit-box-shadow: 0 1px 1px #ccc;
+    box-shadow: 0 1px 1px #ccc;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    position: absolute;
+}
+
+    .update-popup div {
+        width: 25px;
+        height: 25px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
+    }
+
+    .update-popup img {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .update-popup input[type="text"] {
+        padding: 5px;
+        width: 120px;
+        border: 1px solid #ccc;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+    }

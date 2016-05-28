@@ -1,4 +1,65 @@
 ﻿
+var updatePopup = function () {
+
+    function saveValue(span, date, month, year, roomType, label, value) {
+        //dummy alert, will need to use dataFactory
+        //alert('when = ' + date + '/' + month + '/' + year + ', roomType = ' + roomType + ', label = ' + label + ', val = ' + value);
+        span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 2px;" />';
+        //setTimeout(function () {
+        //    span.innerHTML = value;
+        //}, 2000);
+    }
+
+    var drawPopup = function (span, x, y, date, month, year, roomType, label, val) {
+        var body = document.body || document.getElementsByTagName('body')[0];
+
+        var updatePopupContainer = document.createElement('div');
+        updatePopupContainer.className = 'update-popup-container';
+        updatePopupContainer.addEventListener('click', function () {
+            body.removeChild(updatePopupContainer);
+        });
+
+        var updatePopupDiv = document.createElement('div');
+        updatePopupDiv.className = 'update-popup';
+        updatePopupDiv.style.left = (window.innerWidth - x >= 192 ? x : x - 192) + 'px';
+        updatePopupDiv.style.top = (y - 50) + 'px';
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = val;
+        input.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+        input.addEventListener('keypress', function (e) {
+            if (e.keyCode === 13) saveValue(span, date, month, year, roomType, label, input.value);
+        });
+
+        var checkDiv = document.createElement('div');
+        var checkImg = document.createElement('img');
+        checkImg.addEventListener('click', function (e) {
+            saveValue(span, date, month, year, roomType, label, input.value);
+        });
+        checkImg.src = 'img/check-icon.png';
+        checkDiv.appendChild(checkImg);
+
+        var closeDiv = document.createElement('div');
+        var closeImg = document.createElement('img');
+        closeImg.src = 'img/close-icon.png';
+        closeDiv.appendChild(closeImg);
+
+        updatePopupDiv.appendChild(input);
+        updatePopupDiv.appendChild(checkDiv);
+        updatePopupDiv.appendChild(closeDiv);
+        updatePopupContainer.appendChild(updatePopupDiv);
+
+        body.appendChild(updatePopupContainer);
+    };
+
+    return {
+        drawPopup: drawPopup
+    };
+}();
+
 window.onload = function () {
     var curDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
     var isTerminal = false;
@@ -15,7 +76,7 @@ window.onload = function () {
             overflowPanel.style.marginLeft = '0px';
         }
             // in normal case, the sliding moves the div by 'widthToMove' px.
-        else if (marginLeft < - widthToMove) {
+        else if (marginLeft < -widthToMove) {
             var result = marginLeft + widthToMove;
             overflowPanel.style.marginLeft = result + 'px';
         }
@@ -78,7 +139,7 @@ window.onload = function () {
         allDates.className = '';
         setTimeout(function () { allDates.className = 'transition-margin-left'; }, 500);
         allDates.style.marginLeft = '0px';
-        allDates.innerHTML = '<img src="loading-icon.gif" />';
+        allDates.innerHTML = '<img src="img/loading-icon.gif" />';
 
         //dummy setTimeout to simulate loading data from server
         setTimeout(function () {
@@ -88,6 +149,12 @@ window.onload = function () {
             allDates.style.paddingTop = '0';
             allDates.style.width = calendar.getNumDaysOfMonth(date) * 70 + 'px';
             allDates.innerHTML = calendar.drawCal(date.getMonth(), date.getFullYear());
+            var cols = document.getElementsByClassName('open-update-popup');
+            for (var i = 0; i < cols.length; i++) {
+                cols[i].addEventListener('click', function (e) {
+                    updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.date, this.dataset.month, this.dataset.year, this.dataset.roomType, this.dataset.label, this.dataset.val);
+                });
+            }
         }, 500);
     }
 

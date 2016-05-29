@@ -13,40 +13,18 @@
 
     }();
 
-    var getRoomsData = function (month, year) {
+    var getRoomsData = function (month, year, onSuccess, onError) {
         var xhr = createXHR();
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = xhr.responseText;
+                var jsonResponse = JSON.parse(xhr.responseText);
+                onSuccess(jsonResponse);
+            } else if (xhr.readyState === 4 && xhr.status >= 400) {
+                onError(xhr.responseText);
             }
         };
-        //xhr.open('GET', 'api/rooms', true);
-        //xhr.send();
-
-        //dummy data
-        var dd = new Date(year, month + 1, 0);
-        var numOfDays = dd.getDate();
-        var result = [];
-        for (var i = 0; i < numOfDays; i++) {
-            var obj = {
-                Date: '',
-                Rooms: [
-                    {
-                        Type: 'Double',
-                        Avail: 5,
-                        Price: 100
-                    },
-                    {
-                        Type: 'Single',
-                        Avail: 5,
-                        Price: 20
-                    }
-                ]
-            };
-            result.push(obj);
-        }
-        return result;
-        //end dummy
+        xhr.open('GET', 'api/rooms.php?month=' + (month + 1) + '&year=' + year, true);
+        xhr.send();
     };
 
     return {

@@ -1,13 +1,14 @@
 ﻿
 var updatePopup = function () {
 
-    function saveValue(span, date, month, year, roomType, label, value) {
+    function saveValue(span, date, month, year, roomType, label, val) {
         //dummy alert, will need to use dataFactory
         //alert('when = ' + date + '/' + month + '/' + year + ', roomType = ' + roomType + ', label = ' + label + ', val = ' + value);
-        span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 2px;" />';
-        //setTimeout(function () {
-        //    span.innerHTML = value;
-        //}, 2000);
+        span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
+        setTimeout(function () {
+            span.innerHTML = val;
+            span.dataset.val = val;
+        }, 2000);
     }
 
     var drawPopup = function (span, x, y, date, month, year, roomType, label, val) {
@@ -141,21 +142,23 @@ window.onload = function () {
         allDates.style.marginLeft = '0px';
         allDates.innerHTML = '<img src="img/loading-icon.gif" />';
 
-        //dummy setTimeout to simulate loading data from server
-        setTimeout(function () {
+        dataFactory.getRoomsData(date.getMonth(), date.getFullYear(), function (data) {
             navLeftContainer.style.display = 'block';
             navRightContainer.style.display = 'block';
             allDates.style.textAlign = 'inherit';
             allDates.style.paddingTop = '0';
             allDates.style.width = calendar.getNumDaysOfMonth(date) * 70 + 'px';
-            allDates.innerHTML = calendar.drawCal(date.getMonth(), date.getFullYear());
+            allDates.innerHTML = calendar.drawCal(data, date.getMonth(), date.getFullYear());
             var cols = document.getElementsByClassName('open-update-popup');
             for (var i = 0; i < cols.length; i++) {
                 cols[i].addEventListener('click', function (e) {
                     updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.date, this.dataset.month, this.dataset.year, this.dataset.roomType, this.dataset.label, this.dataset.val);
                 });
             }
-        }, 500);
+        }, function (errorText) {
+            allDates.innerHTML = '';
+            alert(errorText);
+        });
     }
 
     window.addEventListener('resize', function () {

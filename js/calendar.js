@@ -22,7 +22,19 @@ var calendar = function () {
             '" data-room-type="' + roomType + '" data-label="' + label + '" data-val="' + val + '">' + val + '</span></div>';
     }
 
-    var drawCal = function (month, year) {
+    function toISOString(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    var drawCal = function (data, month, year) {
         if (!month || !year) {
             month = curDate.getMonth();
             year = curDate.getFullYear();
@@ -31,22 +43,36 @@ var calendar = function () {
         var dateRow, singlePriceRow, singleAvailRow, doublePriceRow, doubleAvailRow;
         dateRow = '<div class="row border-btm">';
         singlePriceRow = singleAvailRow = doublePriceRow = doubleAvailRow = '<div class="row">';
-        var data = dataFactory.getRoomsData(month, year);
         var dates = getDatesInMonth(month, year);
+        var tracker = 0;
 
         for (var i = 0; i < dates.length; i++) {
             dateRow += drawDateCol(dates[i]);
 
-            for (var j = 0; j < data[i].Rooms.length; j++) {
-                var room = data[i].Rooms[j];
-                if (room.Type === 'Double') {
-                    doubleAvailRow += drawPriceOrAvailCol(dates[i], room.Type, 'Avail', room.Avail);
-                    doublePriceRow += drawPriceOrAvailCol(dates[i], room.Type, 'Price', room.Price);
-                } else if (room.Type === 'Single') {
-                    singleAvailRow += drawPriceOrAvailCol(dates[i], room.Type, 'Avail', room.Avail);
-                    singlePriceRow += drawPriceOrAvailCol(dates[i], room.Type, 'Price', room.Price);
+            var defaultDoubleAvailRow, defaultDoublePriceRow, defaultSingleAvailRow, defaultSinglePriceRow;
+            defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], 'Double', 'Avail', 'N/A');
+            defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], 'Double', 'Price', 'N/A');
+            defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], 'Single', 'Avail', 'N/A');
+            defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], 'Single', 'Price', 'N/A');
+
+            if (data[tracker] && toISOString(dates[i]) === data[tracker].Date) {
+                for (var j = 0; j < data[tracker].Rooms.length; j++) {
+                    var room = data[tracker].Rooms[j];
+                    if (room.RoomType === 'Double') {
+                        defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability);
+                        defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', parseFloat(room.Price).toFixed(2));
+                    } else if (room.RoomType === 'Single') {
+                        defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability);
+                        defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', parseFloat(room.Price).toFixed(2));
+                    }
                 }
+                tracker++;
             }
+
+            doubleAvailRow += defaultDoubleAvailRow;
+            doublePriceRow += defaultDoublePriceRow;
+            singleAvailRow += defaultSingleAvailRow;
+            singlePriceRow += defaultSinglePriceRow;
 
             if (i === dates.length - 1) {
                 dateRow += '</div>';

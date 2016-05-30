@@ -1,82 +1,6 @@
 ﻿
-var updatePopup = function () {
-
-    var drawPopup = function (span, x, y, dateStr, roomType, label, val) {
-        var body = document.body || document.getElementsByTagName('body')[0];
-
-        var updatePopupContainer = document.createElement('div');
-        updatePopupContainer.className = 'update-popup-container';
-        updatePopupContainer.addEventListener('click', function () {
-            body.removeChild(updatePopupContainer);
-        });
-
-        var updatePopupDiv = document.createElement('div');
-        updatePopupDiv.className = 'update-popup';
-        updatePopupDiv.style.left = (window.innerWidth - x >= 192 ? x : x - 192) + 'px';
-        updatePopupDiv.style.top = (y - 50) + 'px';
-
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.value = val;
-        input.addEventListener('click', function (e) {
-            e.stopPropagation();
-        });
-        input.addEventListener('keypress', function (e) {
-            if (e.keyCode === 13) {
-                body.removeChild(updatePopupContainer);
-                span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
-                dataFactory.updateRoomData(dateStr, roomType, label, input.value, function () {
-                    span.innerHTML = input.value;
-                    span.dataset.val = input.value;
-                }, function (error) {
-                    alert(error);
-                    if (error === 'Data is saved in our app, but failed to be updated in 3rd-party.') {
-                        span.innerHTML = input.value;
-                        span.dataset.val = input.value;
-                    } else {
-                        span.innerHTML = span.dataset.val
-                    }
-                });
-            }
-        });
-
-        var checkDiv = document.createElement('div');
-        var checkImg = document.createElement('img');
-        checkImg.addEventListener('click', function (e) {
-            span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
-            dataFactory.updateRoomData(dateStr, roomType, label, input.value, function (data) {
-                span.innerHTML = input.value;
-                span.dataset.val = input.value;
-            }, function (error) {
-                alert(error);
-                span.innerHTML = span.dataset.val
-            });
-        });
-        checkImg.src = 'img/check-icon.png';
-        checkDiv.appendChild(checkImg);
-
-        var closeDiv = document.createElement('div');
-        var closeImg = document.createElement('img');
-        closeImg.src = 'img/close-icon.png';
-        closeDiv.appendChild(closeImg);
-
-        updatePopupDiv.appendChild(input);
-        updatePopupDiv.appendChild(checkDiv);
-        updatePopupDiv.appendChild(closeDiv);
-        updatePopupContainer.appendChild(updatePopupDiv);
-
-        body.appendChild(updatePopupContainer);
-        input.focus();
-    };
-
-    return {
-        drawPopup: drawPopup
-    };
-}();
-
 window.onload = function () {
     var curDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
-    var isTerminal = false;
 
     function navLeft() {
         var overflowPanel = document.getElementById('all-dates');
@@ -100,7 +24,6 @@ window.onload = function () {
             overflowPanel.style.marginLeft = (marginLeft + 30) + 'px';
             setTimeout(function () { overflowPanel.style.marginLeft = marginLeft + 'px' }, 150);
         }
-        isTerminal = false;
     }
 
     function navRight() {
@@ -117,20 +40,17 @@ window.onload = function () {
                 && Math.abs(marginLeft) < (entireWidth - containerWidth)
                 && (entireWidth - (containerWidth + widthToMove)) >= 0) {
             overflowPanel.style.marginLeft = (containerWidth - entireWidth) + 'px';
-            isTerminal = true;
         }
             // in normal case, the sliding moves the div by 'widthToMove' px.
         else if (Math.abs(marginLeft) < (entireWidth - (containerWidth + widthToMove))) {
             var result = marginLeft - widthToMove;
             overflowPanel.style.marginLeft = result + 'px';
-            isTerminal = false;
         }
             // when the div is at its edge, but a user still navigates right, the sliding will move the div to the right and then the left(same position)
             // to show that the user has reached the edge of the div
         else if (marginLeft === containerWidth - entireWidth) {
             overflowPanel.style.marginLeft = (marginLeft - 30) + 'px';
             setTimeout(function () { overflowPanel.style.marginLeft = marginLeft + 'px' }, 150);
-            isTerminal = true;
         }
     }
 
@@ -156,11 +76,17 @@ window.onload = function () {
         allDates.innerHTML = '<img src="img/loading-icon.gif" />';
 
         dataFactory.getRoomsData(date.getMonth(), date.getFullYear(), function (data) {
+            var allDatesWidth = calendar.getNumDaysOfMonth(date) * 70;
+            var minNiceMarginLeft = (allDatesWidth - document.getElementById('all-dates-container').offsetWidth) * -1;
+            var niceMarginLeft = (date.getDate() * 70 - 70) * -1;
+            niceMarginLeft = niceMarginLeft < minNiceMarginLeft ? minNiceMarginLeft : niceMarginLeft;
+
             navLeftContainer.style.display = 'block';
             navRightContainer.style.display = 'block';
             allDates.style.textAlign = 'inherit';
             allDates.style.paddingTop = '0';
-            allDates.style.width = calendar.getNumDaysOfMonth(date) * 70 + 'px';
+            allDates.style.width = allDatesWidth + 'px';
+            allDates.style.marginLeft = niceMarginLeft + 'px';
             allDates.innerHTML = calendar.drawCal(data, date.getMonth(), date.getFullYear());
             var cols = document.getElementsByClassName('open-update-popup');
             for (var i = 0; i < cols.length; i++) {
@@ -176,7 +102,7 @@ window.onload = function () {
 
     window.addEventListener('resize', function () {
         var newDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
-        if (newDatesContainerWidth > curDatesContainerWidth && isTerminal) {
+        if (newDatesContainerWidth > curDatesContainerWidth) {
             var curMarginLeft = parseInt(document.getElementById('all-dates').style.marginLeft);
             var newMarginLeft = curMarginLeft + (newDatesContainerWidth - curDatesContainerWidth);
             if (newMarginLeft > 0) newMarginLeft = 0;

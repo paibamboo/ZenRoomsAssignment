@@ -1,4 +1,5 @@
-﻿var dataFactory = function () {
+﻿
+var dataFactory = function () {
     function createXHR() {
         var xhr;
         if (window.XMLHttpRequest) {

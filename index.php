@@ -52,8 +52,9 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="js/data-factory.js"></script>
-    <script type="text/javascript" src="js/calendar.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/data-factory.min.js"></script>
+    <script type="text/javascript" src="js/calendar.min.js"></script>
+	<script type="text/javascript" src="js/update-popup.min.js"></script>
+    <script type="text/javascript" src="js/main.min.js"></script>
 </body>
 </html>

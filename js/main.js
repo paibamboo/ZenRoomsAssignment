@@ -1,17 +1,7 @@
 ﻿
 var updatePopup = function () {
 
-    function saveValue(span, date, month, year, roomType, label, val) {
-        //dummy alert, will need to use dataFactory
-        //alert('when = ' + date + '/' + month + '/' + year + ', roomType = ' + roomType + ', label = ' + label + ', val = ' + value);
-        span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
-        setTimeout(function () {
-            span.innerHTML = val;
-            span.dataset.val = val;
-        }, 2000);
-    }
-
-    var drawPopup = function (span, x, y, date, month, year, roomType, label, val) {
+    var drawPopup = function (span, x, y, dateStr, roomType, label, val) {
         var body = document.body || document.getElementsByTagName('body')[0];
 
         var updatePopupContainer = document.createElement('div');
@@ -32,13 +22,35 @@ var updatePopup = function () {
             e.stopPropagation();
         });
         input.addEventListener('keypress', function (e) {
-            if (e.keyCode === 13) saveValue(span, date, month, year, roomType, label, input.value);
+            if (e.keyCode === 13) {
+                body.removeChild(updatePopupContainer);
+                span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
+                dataFactory.updateRoomData(dateStr, roomType, label, input.value, function () {
+                    span.innerHTML = input.value;
+                    span.dataset.val = input.value;
+                }, function (error) {
+                    alert(error);
+                    if (error === 'Data is saved in our app, but failed to be updated in 3rd-party.') {
+                        span.innerHTML = input.value;
+                        span.dataset.val = input.value;
+                    } else {
+                        span.innerHTML = span.dataset.val
+                    }
+                });
+            }
         });
 
         var checkDiv = document.createElement('div');
         var checkImg = document.createElement('img');
         checkImg.addEventListener('click', function (e) {
-            saveValue(span, date, month, year, roomType, label, input.value);
+            span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
+            dataFactory.updateRoomData(dateStr, roomType, label, input.value, function (data) {
+                span.innerHTML = input.value;
+                span.dataset.val = input.value;
+            }, function (error) {
+                alert(error);
+                span.innerHTML = span.dataset.val
+            });
         });
         checkImg.src = 'img/check-icon.png';
         checkDiv.appendChild(checkImg);
@@ -54,6 +66,7 @@ var updatePopup = function () {
         updatePopupContainer.appendChild(updatePopupDiv);
 
         body.appendChild(updatePopupContainer);
+        input.focus();
     };
 
     return {
@@ -152,7 +165,7 @@ window.onload = function () {
             var cols = document.getElementsByClassName('open-update-popup');
             for (var i = 0; i < cols.length; i++) {
                 cols[i].addEventListener('click', function (e) {
-                    updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.date, this.dataset.month, this.dataset.year, this.dataset.roomType, this.dataset.label, this.dataset.val);
+                    updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.dateStr, this.dataset.roomType, this.dataset.label, this.dataset.val);
                 });
             }
         }, function (errorText) {

@@ -17,8 +17,7 @@ var calendar = function () {
     }
 
     function drawPriceOrAvailCol(date, roomType, label, val) {
-        return '<div class="col-part" style="position:relative;">' + '<span class="open-update-popup clickable" data-date="' + date.getDate() +
-            '" data-month="' + (date.getMonth() + 1) + '" data-year="' + date.getFullYear() +
+        return '<div class="col-part" style="position:relative;">' + '<span class="open-update-popup clickable" data-date-str="' + toISOString(date) +
             '" data-room-type="' + roomType + '" data-label="' + label + '" data-val="' + val + '">' + val + '</span></div>';
     }
 
@@ -50,20 +49,20 @@ var calendar = function () {
             dateRow += drawDateCol(dates[i]);
 
             var defaultDoubleAvailRow, defaultDoublePriceRow, defaultSingleAvailRow, defaultSinglePriceRow;
-            defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], 'Double', 'Avail', 'N/A');
+            defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], 'Double', 'Avail', 5);
             defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], 'Double', 'Price', 'N/A');
-            defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], 'Single', 'Avail', 'N/A');
+            defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], 'Single', 'Avail', 5);
             defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], 'Single', 'Price', 'N/A');
 
             if (data[tracker] && toISOString(dates[i]) === data[tracker].Date) {
                 for (var j = 0; j < data[tracker].Rooms.length; j++) {
                     var room = data[tracker].Rooms[j];
                     if (room.RoomType === 'Double') {
-                        defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability);
-                        defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', parseFloat(room.Price).toFixed(2));
+                        defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability || 5);
+                        defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', room.Price ? parseFloat(room.Price).toFixed(2) : 'N/A');
                     } else if (room.RoomType === 'Single') {
-                        defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability);
-                        defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', parseFloat(room.Price).toFixed(2));
+                        defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', room.Availability || 5);
+                        defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', room.Price ? parseFloat(room.Price).toFixed(2) : 'N/A');
                     }
                 }
                 tracker++;

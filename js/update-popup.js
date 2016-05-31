@@ -26,12 +26,12 @@ var updatePopup = function () {
                 body.removeChild(updatePopupContainer);
                 span.innerHTML = '<img src="img/loading-icon2.gif" style="vertical-align: middle; margin-bottom: 3px;" />';
                 dataFactory.updateRoomData(dateStr, roomType, label, input.value, function () {
-                    span.innerHTML = span.dataset.label === 'Price' ? parseFloat(input.value).toFixed(2) : input.value;
+                    span.innerHTML = span.dataset.label === 'Price' ? parseFloat(input.value).toFixed(2) : parseInt(input.value);
                     span.dataset.val = input.value;
                 }, function (error) {
                     alert(error);
                     if (error === 'Data is saved in our app, but failed to be updated in 3rd-party.') {
-                        span.innerHTML = span.dataset.label === 'Price' ? parseFloat(input.value).toFixed(2) : input.value;
+                        span.innerHTML = span.dataset.label === 'Price' ? parseFloat(input.value).toFixed(2) : parseInt(input.value);
                         span.dataset.val = input.value;
                     } else {
                         span.innerHTML = span.dataset.val

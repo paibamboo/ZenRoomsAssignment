@@ -129,14 +129,18 @@
 			$errMessage = "Invalid availability or price.";
 			if($label === "Avail"){
 				if(is_numeric($value) && $value >= 0 && $value <= 5){
-					$areInputsValids = true;
-					$query = "INSERT INTO `roomsbooking`(`Date`, `RoomType`, `Availability`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `Availability` = ?;";
-					$paramTypes = "ssii";
-			}
+					if(strval($value) === strval(intval($value))){
+						$areInputsValids = true;
+						$query = "INSERT INTO `RoomsBooking`(`Date`, `RoomType`, `Availability`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `Availability` = ?;";
+						$paramTypes = "ssii";
+					}else{
+						$errMessage = "Availability must be integer.";
+					}
+				}
 			}else if($label === "Price"){
 				if(is_numeric($value) && $value >= 0){
 					$areInputsValids = true;
-					$query = "INSERT INTO `roomsbooking`(`Date`, `RoomType`, `Price`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `Price` = ?;";
+					$query = "INSERT INTO `RoomsBooking`(`Date`, `RoomType`, `Price`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `Price` = ?;";
 					$paramTypes = "ssdd";
 				}
 			}

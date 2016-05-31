@@ -133,8 +133,6 @@
 						$areInputsValids = true;
 						$query = "INSERT INTO `RoomsBooking`(`Date`, `RoomType`, `Availability`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `Availability` = ?;";
 						$paramTypes = "ssii";
-					}else{
-						$errMessage = "Availability must be integer.";
 					}
 				}
 			}else if($label === "Price"){

@@ -58,8 +58,10 @@ var calendar = function () {
                 for (var j = 0; j < data[tracker].Rooms.length; j++) {
                     var room = data[tracker].Rooms[j];
                     if (room.RoomType === 'Double') {
+                        defaultDoubleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', (room.Availability === null || room.Availability === undefined) ? 5 : room.Availability);
                         defaultDoublePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', room.Price ? parseFloat(room.Price).toFixed(2) : 'N/A');
                     } else if (room.RoomType === 'Single') {
+                        defaultSingleAvailRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Avail', (room.Availability === null || room.Availability === undefined) ? 5 : room.Availability);
                         defaultSinglePriceRow = drawPriceOrAvailCol(dates[i], room.RoomType, 'Price', room.Price ? parseFloat(room.Price).toFixed(2) : 'N/A');
                     }
                 }

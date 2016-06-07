@@ -2,6 +2,17 @@
 window.onload = function () {
     var curDatesContainerWidth = document.getElementById('all-dates-container').offsetWidth;
 
+    function removeClass(classNames, toRemove) {
+        var newClassName = '';
+        var classes = classNames.split(' ');
+        for (var i = 0; i < classes.length; i++) {
+            if (classes[i].length && classes[i] !== toRemove) {
+                newClassName += classes[i] + " ";
+            }
+        }
+        return newClassName;
+    }
+
     function navLeft() {
         var overflowPanel = document.getElementById('all-dates');
         var style = overflowPanel.style || window.getComputedStyle(overflowPanel);
@@ -90,9 +101,13 @@ window.onload = function () {
             allDates.innerHTML = calendar.drawCal(data, date.getMonth(), date.getFullYear());
             var cols = document.getElementsByClassName('open-update-popup');
             for (var i = 0; i < cols.length; i++) {
-                cols[i].addEventListener('click', function (e) {
-                    updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.dateStr, this.dataset.roomType, this.dataset.label, this.dataset.val);
-                });
+                if (new Date((new Date()).toDateString()) <= new Date(cols[i].dataset.dateStr)) {
+                    cols[i].addEventListener('click', function (e) {
+                        updatePopup.drawPopup(this, e.clientX, e.clientY, this.dataset.dateStr, this.dataset.roomType, this.dataset.label, this.dataset.val);
+                    });
+                } else {
+                    cols[i].className = removeClass(cols[i].className, 'clickable');
+                }
             }
         }, function (errorText) {
             allDates.innerHTML = '';
